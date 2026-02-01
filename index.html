@@ -12,6 +12,28 @@
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
 <style>
+
+.uniform {
+  max-width:1100px;
+  margin:0 auto 16px;
+  padding:14px 16px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+.uniform-icon {
+  font-size:2rem;
+}
+
+.uniform-name {
+  font-size:clamp(.85rem, 2.5vw, 1rem);
+  opacity:.8;
+}
+  
+
 :root {
   --primary:#0d47a1;
   --bg:#f4f6f8;
@@ -121,6 +143,15 @@ tbody tr:hover {
 <div id="app">
   <h1>📅 Jadwal Kuliah Mingguan</h1>
 
+  <div class="uniform" :style="{background: uniforms[activeDay].color}">
+  <span class="uniform-icon">{{ uniforms[activeDay].icon }}</span>
+  <div>
+    <strong>Seragam {{ activeDay }}</strong>
+    <div class="uniform-name">{{ uniforms[activeDay].name }}</div>
+  </div>
+</div>
+
+
   <div class="tabs">
     <div
       v-for="day in days"
@@ -171,7 +202,20 @@ const { createApp } = Vue;
 
 createApp({
   data() {
+
+  
     return {
+
+      uniforms: {
+  Senin:   { name: "Kolase Putih + Celana Hitam", color:"#e3f2fd", icon:"👔" },
+  Selasa: { name: "Almamater", color:"#fce4ec", icon:"🎓" },
+  Rabu:   { name: "Kolase Marun", color:"#e8f5e9", icon:"👕" },
+  Kamis:  { name: "Almamater", color:"#fff3e0", icon:"🧵" },
+  Jumat:  { name: "Solat", color:"#ede7f6", icon:"🕌" },
+  Sabtu:  { name: "Kaos Bebas + Jeans", color:"#eceff1", icon:"👟" }
+},
+
+
       activeDay: "Senin",
       schedule: {
         Senin: [
@@ -230,4 +274,3 @@ createApp({
 
 </body>
 </html>
-
