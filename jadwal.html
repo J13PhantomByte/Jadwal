@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jadwal Kuliah</title>
+
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+<style>
+:root {
+  --primary:#0d47a1;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --free:#e0e0e0;
+}
+
+* {
+  box-sizing:border-box;
+  font-family:system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+body {
+  margin:0;
+  background:var(--bg);
+  padding:16px;
+}
+
+h1 {
+  text-align:center;
+  color:var(--primary);
+  margin-bottom:16px;
+  font-size:clamp(1.3rem, 3vw, 2rem);
+}
+
+/* Tabs */
+.tabs {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:16px;
+}
+
+.tab {
+  padding:10px 14px;
+  border-radius:8px;
+  background:#bbdefb;
+  font-weight:600;
+  cursor:pointer;
+  font-size:clamp(.85rem, 2.5vw, 1rem);
+}
+
+.tab.active {
+  background:var(--primary);
+  color:#fff;
+}
+
+/* Card */
+.card {
+  max-width:1100px;
+  margin:auto;
+  background:var(--card);
+  border-radius:14px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+  overflow:hidden;
+}
+
+/* Table */
+.table-wrap {
+  overflow-x:auto;
+}
+
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:600px;
+}
+
+thead {
+  background:var(--primary);
+  color:#fff;
+}
+
+th, td {
+  padding:14px;
+  text-align:center;
+  border-bottom:1px solid #eee;
+  font-size:clamp(.8rem, 2.3vw, .95rem);
+}
+
+tbody tr:hover {
+  background:#f1f7ff;
+}
+
+.free {
+  background:var(--free);
+  font-style:italic;
+  color:#555;
+  font-weight:500;
+}
+
+.course {
+  color:white;
+  font-weight:600;
+}
+
+/* Mobile */
+@media (max-width:480px) {
+  body { padding:10px }
+  th, td { padding:10px }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <h1>📅 Jadwal Kuliah Mingguan</h1>
+
+  <div class="tabs">
+    <div
+      v-for="day in days"
+      :key="day"
+      class="tab"
+      :class="{active: activeDay === day}"
+      @click="activeDay = day"
+    >
+      {{ day }}
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Waktu</th>
+            <th>Mata Kuliah</th>
+            <th>Dosen</th>
+            <th>Ruangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in schedule[activeDay]" :key="row.waktu">
+            <td>{{ row.waktu }}</td>
+
+            <td
+              :class="row.matkul === 'Free Slot' ? 'free' : 'course'"
+              :style="row.matkul === 'Free Slot'
+                ? {}
+                : { backgroundColor: colorFromString(row.matkul) }"
+            >
+              {{ row.matkul }}
+            </td>
+
+            <td>{{ row.dosen }}</td>
+            <td>{{ row.ruangan }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      activeDay: "Senin",
+      schedule: {
+        Senin: [
+          { waktu:"08:00 AM-09:40 AM", matkul:"ICT 063-Pemograman Komputer 1 (Computer Programming 1)", dosen:"Devi Fajar Wati", ruangan:"Ruang 205" },
+          { waktu:"09:00 AM-10:40 AM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"10:00 AM-11:40 AM", matkul:"ICT 063-Pemograman Komputer 1 (Computer Programming 1)", dosen:"Devi Fajar Wati", ruangan:"Lab IOS" },
+        ],
+        Selasa: [
+          { waktu:"08:00 AM-09:40 AM", matkul:"ICT 006-Analisis dan Perancangan Sistem 1", dosen:"LILA SETIYANI", ruangan:"Ruang 302" },
+        ],
+        Rabu: [
+          { waktu:"08:00 AM-09:40 AM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"09:00 AM-10:40 AM", matkul:"ICT 004-Perancangan UI/UX 1", dosen:"Devi Fajar Wati", ruangan:"Ruang 201" },
+          { waktu:"10:00 AM-11:40 AM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"10:40 AM-12:20 PM", matkul:"ICT 004-Perancangan UI/UX 1", dosen:"Devi Fajar Wati", ruangan:"Lab Computer 2" },
+          { waktu:"01:00 PM-02:40 PM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"03:00 PM-04:15 PM", matkul:"GEN 023-Global Workplace English Program II", dosen:"Dwi Nita Febriyanti", ruangan:"Ruang 202" },
+        ],
+        Kamis: [
+          { waktu:"08:00 AM-09:40 AM", matkul:"ICT 009-Sistem Basis Data 1", dosen:"Wafiqah Azhar", ruangan:"Ruang 304" },
+          { waktu:"09:00 AM-10:40 AM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"10:00 AM-11:40 AM", matkul:"ICT 009-Sistem Basis Data 1", dosen:"Wafiqah Azhar", ruangan:"Lab Computer 3" },
+          { waktu:"10:40 AM-12:20 PM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"01:00 PM-02:40 PM", matkul:"GEN 003-Kewarganegaraan (Citizenship)", dosen:"Gracendy Aluz Clarita Budiono", ruangan:"Ruang 304" },
+          { waktu:"03:00 PM-04:15 PM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"05:00 PM-06:15 PM", matkul:"GEN 023-Global Workplace English Program II", dosen:"Dwi Nita Febriyanti", ruangan:"Ruang 304" },
+        ],
+        Jumat: [
+            { waktu:"08:00 AM-09:40 AM", matkul:"LIBURRR CUYY", dosen:"", ruangan:"" },
+        ],
+        Sabtu: [
+          { waktu:"08:00 AM-09:40 AM", matkul:"ICT 007-Desain Grafis dan Multimedia", dosen:"AYU NUR INDAHSARI", ruangan:"Ruang 201" },
+          { waktu:"09:00 AM-10:40 AM", matkul:"Free Slot", dosen:"", ruangan:"" },
+          { waktu:"10:00 AM-11:40 AM", matkul:"ICT 007-Desain Grafis dan Multimedia", dosen:"AYU NUR INDAHSARI", ruangan:"Lab Computer 2" },
+        ]
+      }
+    };
+  },
+  computed: {
+    days() {
+      return Object.keys(this.schedule);
+    }
+  },
+  methods: {
+    colorFromString(text) {
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        hash = text.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hue = Math.abs(hash) % 360;
+      return `hsl(${hue}, 65%, 55%)`;
+    }
+  }
+}).mount("#app");
+</script>
+
+</body>
+</html>
